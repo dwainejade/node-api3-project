@@ -1,21 +1,36 @@
 const express = require('express');
+const users = require("./userDb")
+const posts = require("../posts/postDb")
+const { validateUserId, } = require("./usersMiddlewware")
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  // do your magic!
+router.post('/', validateUserId(), (req, res) => {
+
 });
 
 router.post('/:id/posts', (req, res) => {
-  // do your magic!
+
 });
 
 router.get('/', (req, res) => {
-  // do your magic!
+  const options = {
+    sortBy: req.query.sortBy,
+    limit: req.query.limit
+  }
+
+  users.get(options)
+    .then((users) => {
+      res.status(200).json(users)
+
+    })
+    .catch((error) => {
+      next(error)
+    })
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get('/:id', validateUserId(), (req, res) => {
+  res.status(200).json(req.user)
 });
 
 router.get('/:id/posts', (req, res) => {
@@ -32,16 +47,6 @@ router.put('/:id', (req, res) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {
-  // do your magic!
-}
 
-function validateUser(req, res, next) {
-  // do your magic!
-}
-
-function validatePost(req, res, next) {
-  // do your magic!
-}
 
 module.exports = router;
