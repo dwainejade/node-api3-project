@@ -17,8 +17,17 @@ router.post('/', validateUser(), (req, res) => {
 });
 
 // CREATE POST
-router.post('/:id/posts', (req, res) => {
-
+router.post('/:id/posts', validatePost(), validateUserId(), (req, res) => {
+  posts.insert({
+    text: req.body.text,
+    user_id: req.params.id,
+  })
+    .then((post) => {
+      res.status(201).json(post)
+    })
+    .catch((error) => {
+      next(error)
+    })
 });
 
 // GET ALL USERS
@@ -97,9 +106,6 @@ router.put('/:id', validateUser(), validateUserId(), (req, res) => {
       next(error)
     })
 });
-
-//custom middleware
-
 
 
 module.exports = router;
