@@ -1,18 +1,27 @@
 const express = require('express');
 const users = require("./userDb")
 const posts = require("../posts/postDb")
-const { validateUserId, } = require("./usersMiddlewware")
+const { validateUserId, validateUser, validatePost} = require("./usersMiddlewware")
 
 const router = express.Router();
 
-router.post('/', validateUserId(), (req, res) => {
-
+// CREATE USER
+router.post('/', validateUser(), (req, res) => {
+  users.insert(req.body)
+    .then((user) =>{
+      res.status(201).json(user)
+    })
+    .catch((error)=>{
+      next(error)
+    })
 });
 
+// CREATE POST
 router.post('/:id/posts', (req, res) => {
 
 });
 
+// GET ALL USERS
 router.get('/', (req, res) => {
   const options = {
     sortBy: req.query.sortBy,
@@ -29,6 +38,7 @@ router.get('/', (req, res) => {
     })
 });
 
+// GET USER BY ID
 router.get('/:id', validateUserId(), (req, res) => {
   res.status(200).json(req.user)
 });
