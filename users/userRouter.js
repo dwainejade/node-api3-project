@@ -1,17 +1,17 @@
 const express = require('express');
 const users = require("./userDb")
 const posts = require("../posts/postDb")
-const { validateUserId, validateUser, validatePost} = require("./usersMiddlewware")
+const { validateUserId, validateUser, validatePost } = require("./usersMiddlewware")
 
 const router = express.Router();
 
 // CREATE USER
 router.post('/', validateUser(), (req, res) => {
   users.insert(req.body)
-    .then((user) =>{
+    .then((user) => {
       res.status(201).json(user)
     })
-    .catch((error)=>{
+    .catch((error) => {
       next(error)
     })
 });
@@ -44,7 +44,19 @@ router.get('/:id', validateUserId(), (req, res) => {
 });
 
 router.get('/:id/posts', (req, res) => {
-  // do your magic!
+  users.getUserPosts(req.params.id)
+    .then((post) => {
+      if (post) {
+        res.json(post)
+      } else {
+        res.status(404).json({
+          message: "Can't find this post bro."
+        })
+      }
+    })
+    .catch((error) => {
+      next(error)
+    })
 });
 
 router.delete('/:id', (req, res) => {
