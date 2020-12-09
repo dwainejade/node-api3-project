@@ -43,6 +43,7 @@ router.get('/:id', validateUserId(), (req, res) => {
   res.status(200).json(req.user)
 });
 
+// GET POST BY ID
 router.get('/:id/posts', validateUserId(), (req, res) => {
   users.getUserPosts(req.params.id)
     .then((post) => {
@@ -59,6 +60,7 @@ router.get('/:id/posts', validateUserId(), (req, res) => {
     })
 });
 
+// DELETE USER
 router.delete('/:id', validateUserId(), (req, res) => {
   users.remove(req.params.id)
     .then((count) => {
@@ -77,8 +79,23 @@ router.delete('/:id', validateUserId(), (req, res) => {
     })
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+// UPDATE USER
+router.put('/:id', validateUser(), validateUserId(), (req, res) => {
+  users.update(req.params.id, req.body)
+    .then((user) => {
+      if (user) {
+        res.status(200).json({
+          name: req.body.name
+        })
+      } else {
+        res.status(404).json({
+          message: "Nobody here by that name."
+        })
+      }
+    })
+    .catch((error) => {
+      next(error)
+    })
 });
 
 //custom middleware

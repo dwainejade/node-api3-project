@@ -9,7 +9,7 @@ function validateUserId() {
                     next()
                 } else {
                     res.status(404).json({
-                        message: "This user is not real bro; I checked."
+                        message: "This user is not real bro, I checked."
                     })
                 }
             })
