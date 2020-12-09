@@ -43,7 +43,7 @@ router.get('/:id', validateUserId(), (req, res) => {
   res.status(200).json(req.user)
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId(), (req, res) => {
   users.getUserPosts(req.params.id)
     .then((post) => {
       if (post) {
@@ -59,8 +59,22 @@ router.get('/:id/posts', (req, res) => {
     })
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+router.delete('/:id', validateUserId(), (req, res) => {
+  users.remove(req.params.id)
+    .then((count) => {
+      if (count > 0) {
+        res.status(200).json({
+          message: "We got em; They're outta here!"
+        })
+      } else {
+        res.status(404).json({
+          message: "This one is too evasive; I can't find them"
+        })
+      }
+    })
+    .catch((error) => {
+      next(error)
+    })
 });
 
 router.put('/:id', (req, res) => {
